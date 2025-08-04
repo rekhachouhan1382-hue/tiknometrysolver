@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>त्रिकोणमिति हलकर्ता</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      border: 1px solid #aaa;
+      border-radius: 10px;
+    }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background-color: #4facfe;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 1rem;
+      width: 100%;
+      font-weight: bold;
+    }
+
+    .output {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .formula {
+      margin-top: 1rem;
+      background: #f5f5f5;
+      padding: 0.8rem;
+      border-radius: 10px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔺 त्रिकोणमिति हलकर्ता</h1>
+  <div class="container">
+    <label>कोण (θ डिग्री में):</label>
+    <input type="number" id="angle" placeholder="उदाहरण: 30">
+
+    <label>लंब (Opposite Side):</label>
+    <input type="number" id="opposite" placeholder="अगर मालूम नहीं हो तो खाली छोड़ें">
+
+    <label>आधार (Adjacent Side):</label>
+    <input type="number" id="adjacent" placeholder="अगर मालूम नहीं हो तो खाली छोड़ें">
+
+    <label>कर्ण (Hypotenuse):</label>
+    <input type="number" id="hypotenuse" placeholder="अगर मालूम नहीं हो तो खाली छोड़ें">
+
+    <button onclick="solveTrig()">हल करें</button>
+
+    <div class="output" id="result"></div>
+  </div>
+
+  <script>
+    function toRadians(deg) {
+      return deg * (Math.PI / 180);
+    }
+
+    function toDegrees(rad) {
+      return rad * (180 / Math.PI);
+    }
+
+    function solveTrig() {
+      const angleInput = parseFloat(document.getElementById('angle').value);
+      const opp = parseFloat(document.getElementById('opposite').value);
+      const adj = parseFloat(document.getElementById('adjacent').value);
+      const hyp = parseFloat(document.getElementById('hypotenuse').value);
+
+      let result = '';
+      let theta = angleInput ? toRadians(angleInput) : null;
+      let o = opp || null;
+      let a = adj || null;
+      let h = hyp || null;
+
+      try {
+        if (theta && o) h = o / Math.sin(theta), a = o / Math.tan(theta);
+        else if (theta && a) h = a / Math.cos(theta), o = a * Math.tan(theta);
+        else if (theta && h) o = h * Math.sin(theta), a = h * Math.cos(theta);
+        else if (o && a) h = Math.sqrt(o * o + a * a), theta = Math.atan(o / a);
+        else if (o && h) a = Math.sqrt(h * h - o * o), theta = Math.asin(o / h);
+        else if (a && h) o = Math.sqrt(h * h - a * a), theta = Math.acos(a / h);
+
+        const sinVal = (o && h) ? (o / h).toFixed(3) : 'उपलब्ध नहीं';
+        const cosVal = (a && h) ? (a / h).toFixed(3) : 'उपलब्ध नहीं';
+        const tanVal = (o && a) ? (o / a).toFixed(3) : 'उपलब्ध नहीं';
+
+        result = `
+          🔹 कोण θ: ${theta ? toDegrees(theta).toFixed(2) + '°' : 'उपलब्ध नहीं'}<br>
+          🔹 लंब: ${o ? o.toFixed(2) : 'N/A'}<br>
+          🔹 आधार: ${a ? a.toFixed(2) : 'N/A'}<br>
+          🔹 कर्ण: ${h ? h.toFixed(2) : 'N/A'}
+          <div class="formula">
+            👉 sin(θ) = ${sinVal} <br>
+            👉 cos(θ) = ${cosVal} <br>
+            👉 tan(θ) = ${tanVal}
+          </div>
+        `;
+      } catch {
+        result = "⚠️ कृपया कम से कम 2 मान सही से दर्ज करें।";
+      }
+
+      document.getElementById('result').innerHTML = result;
+    }
+  </script>
+</body>
+</html>
